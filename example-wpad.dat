@@ -1,0 +1,125 @@
+// WPAD Configuration for sokolov.me
+// Place this file at: http://wpad.sokolov.me/wpad.dat
+// Ensure your web server returns MIME type: application/x-ns-proxy-autoconfig
+
+function FindProxyForURL(url, host) {
+    // Convert to lowercase for consistent matching
+    url = url.toLowerCase();
+    host = host.toLowerCase();
+    
+    // Debug logging (view in browser console when testing)
+    // alert("URL: " + url + ", Host: " + host);
+    
+    // 1. Direct connection for localhost
+    if (host == "localhost" || 
+        host == "127.0.0.1" || 
+        host == "::1") {
+        return "DIRECT";
+    }
+    
+    // 2. Direct connection for local network addresses
+    if (isPlainHostName(host)) {
+        return "DIRECT";
+    }
+    
+    // 3. Direct connection for private IP ranges
+    if (isInNet(host, "10.0.0.0", "255.0.0.0") ||
+        isInNet(host, "172.16.0.0", "255.240.0.0") ||
+        isInNet(host, "192.168.0.0", "255.255.0.0") ||
+        isInNet(host, "169.254.0.0", "255.255.0.0")) {
+        return "DIRECT";
+    }
+    
+    // 4. Direct connection for your own domain
+    if (dnsDomainIs(host, ".sokolov.me") || 
+        host == "sokolov.me") {
+        return "DIRECT";
+    }
+    
+    // 5. Direct connection for Apple services
+    if (dnsDomainIs(host, ".apple.com") ||
+        dnsDomainIs(host, ".icloud.com") ||
+        dnsDomainIs(host, ".apple-dns.net")) {
+        return "DIRECT";
+    }
+    
+    // 6. Use proxy for social media (example)
+    if (dnsDomainIs(host, ".facebook.com") ||
+        dnsDomainIs(host, ".twitter.com") ||
+        dnsDomainIs(host, ".instagram.com") ||
+        dnsDomainIs(host, ".tiktok.com")) {
+        return "PROXY social-proxy.sokolov.me:8080; DIRECT";
+    }
+    
+    // 7. Use proxy for streaming services (example)
+    if (dnsDomainIs(host, ".netflix.com") ||
+        dnsDomainIs(host, ".hulu.com") ||
+        dnsDomainIs(host, ".youtube.com") ||
+        dnsDomainIs(host, ".spotify.com")) {
+        return "PROXY media-proxy.sokolov.me:8080; DIRECT";
+    }
+    
+    // 8. Use SOCKS proxy for specific protocols
+    if (url.substring(0, 6) == "ftp://") {
+        return "SOCKS socks.sokolov.me:1080; DIRECT";
+    }
+    
+    // 9. Block ads and trackers (return invalid proxy to block)
+    if (shExpMatch(host, "*doubleclick.net") ||
+        shExpMatch(host, "*googleadservices.com") ||
+        shExpMatch(host, "*googlesyndication.com") ||
+        shExpMatch(host, "*google-analytics.com") ||
+        shExpMatch(host, "*facebook.com/tr*")) {
+        return "PROXY 0.0.0.0:0";
+    }
+    
+    // 10. Geographic routing (example)
+    // Use different proxies based on top-level domain
+    if (dnsDomainIs(host, ".cn") || 
+        dnsDomainIs(host, ".ru")) {
+        return "PROXY geo-proxy.sokolov.me:8080; DIRECT";
+    }
+    
+    // 11. Time-based routing (requires custom implementation)
+    // var now = new Date();
+    // var hour = now.getHours();
+    // if (hour >= 9 && hour < 17) {
+    //     return "PROXY work-proxy.sokolov.me:8080; DIRECT";
+    // }
+    
+    // 12. Default rule - use primary proxy with fallback to direct
+    return "PROXY proxy.sokolov.me:8080; PROXY backup-proxy.sokolov.me:8080; DIRECT";
+}
+
+// Helper function for IP address validation
+function isValidIP(ipaddr) {
+    var parts = ipaddr.split(".");
+    if (parts.length != 4) return false;
+    for (var i = 0; i < 4; i++) {
+        var part = parseInt(parts[i]);
+        if (isNaN(part) || part < 0 || part > 255) return false;
+    }
+    return true;
+}
+
+// Additional helper function for checking IP ranges
+function isInIPRange(ip, rangeStart, rangeEnd) {
+    if (!isValidIP(ip) || !isValidIP(rangeStart) || !isValidIP(rangeEnd)) {
+        return false;
+    }
+    
+    var ipNum = ipToNumber(ip);
+    var startNum = ipToNumber(rangeStart);
+    var endNum = ipToNumber(rangeEnd);
+    
+    return (ipNum >= startNum && ipNum <= endNum);
+}
+
+// Convert IP to number for comparison
+function ipToNumber(ip) {
+    var parts = ip.split(".");
+    return (parseInt(parts[0]) << 24) + 
+           (parseInt(parts[1]) << 16) + 
+           (parseInt(parts[2]) << 8) + 
+           parseInt(parts[3]);
+}
