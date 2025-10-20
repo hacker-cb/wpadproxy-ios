@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WPAD Proxy Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WPAD Proxy Manager</h1>
+            <p>Configure and test your Web Proxy Auto-Discovery settings</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('config')">Configuration</button>
+            <button class="tab-button" onclick="showTab('editor')">PAC Script Editor</button>
+            <button class="tab-button" onclick="showTab('test')">Test Rules</button>
+            <button class="tab-button" onclick="showTab('templates')">Templates</button>
+            <button class="tab-button" onclick="showTab('endpoints')">Endpoints</button>
+        </div>
+
+        <div id="config" class="tab-content active">
+            <h2>WPAD Configuration</h2>
+            
+            <div class="config-section">
+                <label>
+                    <input type="checkbox" id="wpadEnabled" checked>
+                    Enable WPAD Service
+                </label>
+            </div>
+
+            <div class="config-section">
+                <h3>Configuration Mode</h3>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="mode" value="auto" id="modeAuto">
+                        Auto-Discovery (WPAD)
+                    </label>
+                    <label>
+                        <input type="radio" name="mode" value="manual" id="modeManual" checked>
+                        Manual PAC URL
+                    </label>
+                    <label>
+                        <input type="radio" name="mode" value="local" id="modeLocal">
+                        Local PAC Script
+                    </label>
+                </div>
+            </div>
+
+            <div id="autoConfig" class="config-mode" style="display:none;">
+                <div class="form-group">
+                    <label for="domain">Domain for WPAD Discovery:</label>
+                    <input type="text" id="domain" placeholder="example.com">
+                    <small>WPAD will look for: http://wpad.example.com/wpad.dat</small>
+                </div>
+            </div>
+
+            <div id="manualConfig" class="config-mode">
+                <div class="form-group">
+                    <label for="pacUrl">PAC File URL:</label>
+                    <input type="url" id="pacUrl" placeholder="http://proxy.example.com/proxy.pac">
+                    <button onclick="fetchPACFile()">Fetch PAC File</button>
+                </div>
+            </div>
+
+            <button class="save-btn" onclick="saveConfiguration()">Save Configuration</button>
+            <div id="configMessage" class="message"></div>
+        </div>
+
+        <div id="editor" class="tab-content">
+            <h2>PAC Script Editor</h2>
+            <div class="editor-toolbar">
+                <button onclick="validatePACScript()">Validate Script</button>
+                <button onclick="savePACScript()">Save Script</button>
+                <button onclick="formatPACScript()">Format</button>
+            </div>
+            <textarea id="pacEditor" placeholder="Enter your PAC script here..."></textarea>
+            <div id="editorMessage" class="message"></div>
+        </div>
+
+        <div id="test" class="tab-content">
+            <h2>Test Proxy Rules</h2>
+            <div class="test-section">
+                <div class="form-group">
+                    <label for="testUrl">Test URL:</label>
+                    <input type="url" id="testUrl" placeholder="https://example.com">
+                    <button onclick="testProxyRules()">Test</button>
+                </div>
+                
+                <div id="testResults" class="results-section">
+                    <!-- Test results will appear here -->
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>Common Test URLs</h3>
+                <div class="quick-test-buttons">
+                    <button onclick="quickTest('https://google.com')">google.com</button>
+                    <button onclick="quickTest('https://facebook.com')">facebook.com</button>
+                    <button onclick="quickTest('https://github.com')">github.com</button>
+                    <button onclick="quickTest('http://192.168.1.1')">Local Network</button>
+                    <button onclick="quickTest('http://localhost:3000')">Localhost</button>
+                    <button onclick="quickTest('https://api.example.com')">API Server</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="templates" class="tab-content">
+            <h2>PAC Script Templates</h2>
+            <div id="templateList" class="template-list">
+                <!-- Templates will be loaded here -->
+            </div>
+        </div>
+
+        <div id="endpoints" class="tab-content">
+            <h2>Available Endpoints</h2>
+            <div class="endpoints-info">
+                <div class="endpoint-card">
+                    <h3>WPAD Auto-Discovery File</h3>
+                    <p class="endpoint-url" id="wpadUrl"></p>
+                    <p>Standard WPAD auto-discovery endpoint. Configure your network to point to this URL.</p>
+                    <button onclick="copyToClipboard('wpadUrl')">Copy URL</button>
+                </div>
+
+                <div class="endpoint-card">
+                    <h3>PAC Proxy Configuration File</h3>
+                    <p class="endpoint-url" id="pacFileUrl"></p>
+                    <p>Direct PAC file endpoint for manual proxy configuration.</p>
+                    <button onclick="copyToClipboard('pacFileUrl')">Copy URL</button>
+                </div>
+
+                <div class="endpoint-card">
+                    <h3>Configuration Instructions</h3>
+                    <div class="instructions">
+                        <h4>For iOS Devices:</h4>
+                        <ol>
+                            <li>Go to Settings → Wi-Fi</li>
+                            <li>Tap the (i) next to your network</li>
+                            <li>Scroll to HTTP Proxy → Configure Proxy</li>
+                            <li>Select "Auto" and enter the PAC URL</li>
+                        </ol>
+
+                        <h4>For Browsers:</h4>
+                        <p><strong>Chrome/Edge:</strong> Settings → Advanced → System → Open proxy settings</p>
+                        <p><strong>Firefox:</strong> Settings → Network Settings → Automatic proxy configuration URL</p>
+                        <p><strong>Safari:</strong> System Preferences → Network → Advanced → Proxies</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
