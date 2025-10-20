@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // Tab switching
-function showTab(tabName) {
+function showTab(event, tabName) {
     // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -276,9 +276,15 @@ function useTemplate(encodedScript) {
     document.getElementById('pacEditor').value = script;
     
     // Switch to editor tab
-    showTab('editor');
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.getElementById('editor').classList.add('active');
+    
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
     document.querySelectorAll('.tab-button')[1].classList.add('active');
-    document.querySelectorAll('.tab-button')[3].classList.remove('active');
 }
 
 // Update endpoint URLs

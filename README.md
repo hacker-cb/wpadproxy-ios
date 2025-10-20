@@ -1,4 +1,44 @@
-# WPAD Proxy for iOS
+# WPAD Proxy Manager
+
+This repository contains two components:
+1. **WPAD Proxy Manager (Web)** - A web-based tool for managing and testing WPAD/PAC configurations
+2. **WPAD Proxy for iOS** - An iOS app for system-wide proxy configuration (requires Xcode/macOS)
+
+## WPAD Proxy Manager (Web)
+
+A web-based management tool for creating, testing, and serving WPAD (Web Proxy Auto-Discovery) and PAC (Proxy Auto-Config) files.
+
+### Features
+
+- ✅ Web-based PAC script editor with validation
+- ✅ Real-time proxy rule testing
+- ✅ WPAD endpoint serving (`/wpad.dat`)
+- ✅ PAC file endpoint (`/proxy.pac`)
+- ✅ Multiple PAC script templates
+- ✅ Remote PAC file fetching and validation
+- ✅ Configuration persistence
+
+### Quick Start
+
+1. Install dependencies: `npm install`
+2. Start the server: `npm run dev`
+3. Open browser to: `http://localhost:5000`
+
+### Endpoints
+
+- **Web Interface**: `http://localhost:5000`
+- **WPAD File**: `http://localhost:5000/wpad.dat`
+- **PAC File**: `http://localhost:5000/proxy.pac`
+
+### Configuration
+
+The web interface allows you to:
+- Edit and validate PAC scripts
+- Test URLs against your proxy rules
+- Use pre-built PAC templates
+- Fetch and validate remote PAC files
+
+## WPAD Proxy for iOS
 
 A system-wide proxy application for iOS that uses PAC (Proxy Auto-Config) files and WPAD (Web Proxy Auto-Discovery) to automatically configure proxy settings for all network connections.
 
